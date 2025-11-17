@@ -7,8 +7,8 @@ clock = pygame.time.Clock()
 running = True
 screen1=pygame.image.load('rectangle.png')
 player = Player(screen1)
-player_x = player.x
-player_y = player.y
+player_x = player.rect.x
+player_y = player.rect.y
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:

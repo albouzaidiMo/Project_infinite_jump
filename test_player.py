@@ -12,14 +12,13 @@ def player():
 
 
 def test_move_left(player):
-    start_x = player.x
+    start_x = player.rect.x
     player.left()
-    assert player.x == start_x - player.player_x_change
-
+    assert player.rect.x == start_x - player.player_x_change
 def test_move_right(player):
-    start_x = player.x
+    start_x = player.rect.x
     player.right()
-    assert player.x == start_x + player.player_x_change
+    assert player.rect.x == start_x + player.player_x_change
 
 def test_jump_vy_flag(player):
     player.jump()
