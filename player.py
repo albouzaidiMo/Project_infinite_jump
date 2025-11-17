@@ -36,5 +36,10 @@ class Player(pygame.sprite.Sprite):
 
     def right(self):
         self.rect.x += self.player_x_change
+    def frontiere(self):
+        if self.rect.x > 770-self.width:
+            self.rect.x = self.rect.x - self.player_x_change
+        if self.rect.x < 5:
+            self.rect.x = self.rect.x + self.player_x_change
 
 

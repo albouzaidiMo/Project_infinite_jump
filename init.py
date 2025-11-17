@@ -20,7 +20,7 @@ while running:
         player.right()
     if keys[pygame.K_SPACE]:
         player.jump()
-
+    player.frontiere()
     player.update(580)
     screen.fill((0, 0, 0))
     player.draw(screen)
