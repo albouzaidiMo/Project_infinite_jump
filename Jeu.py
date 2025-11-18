@@ -5,17 +5,7 @@ from player import Player
 from plateforme import spawnPlateform, activePlates
 from ennemies import Enemy
 import utils
-
-# --- CONSTANTES ---
-WIDTH, HEIGHT = 800, 600
-GAP_Y = 170
-plateforme_par_ligne = 1
-
-# Couleurs pour l'interface (P5)
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-BLUE = (0, 0, 255)
+from constants import *
 
 
 #FONCTION D'AFFICHAGE DE TEXTE
