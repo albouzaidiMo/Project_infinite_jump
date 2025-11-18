@@ -1,6 +1,6 @@
 import pygame
 class Player(pygame.sprite.Sprite):
-    def _init_(self, image):
+    def __init__(self, image):
         super().__init__()
         self.image = image
         self.rect = self.image.get_rect()
