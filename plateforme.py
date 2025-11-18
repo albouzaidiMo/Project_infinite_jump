@@ -19,8 +19,13 @@ class Plateform(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, rects[random.randint(0, len(rects) - 1)])
         self.x = 600 -  xx[random.randint(0,2)]
         self.y = 300
+        self.enemy = None
 
+    def get_width(self):
+        return self.image.get_width()
 
+    def get_height(self):
+        return self.image.get_height()
 
     def getrect(self):
         return self.image.get_rect()
