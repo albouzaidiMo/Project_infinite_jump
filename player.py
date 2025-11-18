@@ -1,22 +1,22 @@
 import pygame
 class Player(pygame.sprite.Sprite):
-    def __init__(self, image):
+    def _init_(self, image):
         super().__init__()
         self.image = image
         self.rect = self.image.get_rect()
-        self.rect.x = 580
-        self.rect.y = 370
+        self.rect.x = 400
+        self.rect.y = 540
         self.vx = 0
         self.vy = 0
         self.gravity = 1
         self.is_jumping = False
-        self.width = 10
-        self.height = 10
+        self.width = self.rect.width
+        self.height = self.rect.height
         self.player_y_change = 50
         self.player_x_change = 5
     def jump(self):
         if not self.is_jumping:
-            self.vy = -15
+            self.vy = -22
             self.is_jumping = True
 
 
@@ -36,10 +36,9 @@ class Player(pygame.sprite.Sprite):
 
     def right(self):
         self.rect.x += self.player_x_change
+
     def frontiere(self):
-        if self.rect.x > 770-self.width:
-            self.rect.x = self.rect.x - self.player_x_change
-        if self.rect.x < 5:
-            self.rect.x = self.rect.x + self.player_x_change
-
-
+        if self.rect.left > 800:
+            self.rect.right = 0
+        elif self.rect.right < 0:
+            self.rect.left = 800
