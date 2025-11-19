@@ -5,12 +5,12 @@ pygame.init()
 screen = pygame.display.set_mode((800, 600))
 clock = pygame.time.Clock()
 screen1 = pygame.image.load("enemytest.png")
-platform_sol = [ 0 , 800 , 600]
+platform_sol = [ 0 , 800 , 300]
 enemy = Enemy(screen1, platform_sol)
 enemy_x = enemy.rect.x
 enemy_y = enemy.rect.y
 running = True
-print ( enemy.rect.x,enemy.rect.y, enemy.height, enemy.width)
+
 while running :
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -20,4 +20,5 @@ while running :
     enemy.draw(screen)
     clock.tick(60)
     pygame.display.update()
+
 pygame.quit()
