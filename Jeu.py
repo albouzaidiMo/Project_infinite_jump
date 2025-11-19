@@ -1,14 +1,12 @@
 import pygame
 import random
 from os.path import join
-
 from main_menu import MainMenu
 from player import Player
 from plateforme import spawnPlateform, activePlates
 from ennemies import Enemy
 import utils
 from constants import *
-
 
 #FONCTION D'AFFICHAGE DE TEXTE
 def draw_text(screen, text, size, color, x, y):
@@ -23,7 +21,8 @@ def draw_text(screen, text, size, color, x, y):
 
 
 
-
+#fréquence d'apparition des ennemis
+n=1700
 def create_enemy_on_platform(plateform, enemy_img):
     x_min = plateform.x
     x_max = plateform.x + plateform.image.get_width()
@@ -34,13 +33,12 @@ def create_enemy_on_platform(plateform, enemy_img):
     plateform.enemy = enemy
     return enemy
 
-
-def init_platforms_and_enemies(enemy_img):
+def init_platforms_and_enemies(enemy_img,score):
     activePlates.clear()
     enemies = []
     y = HEIGHT - 80
     while y > -HEIGHT:
-        for _ in range(plateforme_par_ligne):
+        for k in range(plateforme_par_ligne):
             p = spawnPlateform()
             p.y = y
             # Gestion de sécurité si l'image n'est pas chargée
@@ -50,8 +48,8 @@ def init_platforms_and_enemies(enemy_img):
                 w = 100
             p.x = random.randint(0, WIDTH - w)
 
-            if score>400:
-                     if random.random() < min(0.9,score/1000):
+            if score>500:
+                     if random.random() < min(0.9,score/n):
                         e = create_enemy_on_platform(p, enemy_img)
                         enemies.append(e)
             else:
@@ -60,7 +58,7 @@ def init_platforms_and_enemies(enemy_img):
     return enemies
 
 
-def recycle_platforms_and_enemies(enemies, enemy_img):
+def recycle_platforms_and_enemies(enemies, enemy_img,score):
     if not activePlates:
         return enemies
 
@@ -83,14 +81,14 @@ def recycle_platforms_and_enemies(enemies, enemy_img):
                 e.rect.bottom = p.y
                 e.rect.x = random.randint(x_min, x_max - e.width)
             else:
-                if score>400:
-                     if random.random() < min(0.9,score/1000):
+                if score>500:
+                     if random.random() < min(0.9,score/n):
                         e = create_enemy_on_platform(p, enemy_img)
                         enemies.append(e)
     return enemies
 
 
-score = 0
+
 
 def main():
     pygame.init()
@@ -104,15 +102,13 @@ def main():
     enemy_img = pygame.image.load(join("assets", "enemy.png"))
     enemy_img = pygame.transform.scale(enemy_img, (52, 33))
 
+    score = 0
     player = Player(player_img)
-
-    enemies = init_platforms_and_enemies(enemy_img)
+    enemies = init_platforms_and_enemies(enemy_img,score)
 
     running = True
     scroll_started = False
-
     game_over = False
-    score = 0
     started = False
     menu = MainMenu()
 
@@ -166,7 +162,7 @@ def main():
                 for p in activePlates:
                     plat_rect = pygame.Rect(p.x, p.y, p.image.get_width(), p.image.get_height())
                     if player.vy >= 0 and player.rect.colliderect(plat_rect):
-                        if player.rect.bottom <= plat_rect.top + 15:
+                        if player.rect.bottom <= plat_rect.top + 40:
                             player.rect.bottom = plat_rect.top
                             player.vy = 0
                             player.is_jumping = [False,False]
@@ -183,7 +179,7 @@ def main():
                         p.update()
                     for e in enemies:
                         e.rect.bottom = e.platform_sprite.y
-                    enemies = recycle_platforms_and_enemies(enemies, enemy_img)
+                    enemies = recycle_platforms_and_enemies(enemies, enemy_img,score)
 
                 for e in enemies:
                     e.mouvement_uniforme_in_platform()
