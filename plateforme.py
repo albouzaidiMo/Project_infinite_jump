@@ -15,7 +15,7 @@ y_change = 1.7
 class Plateform(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load(join("assets","plateforme.png"))
+        self.image = pygame.image.load(join("assets","floor.png"))
         self.image = pygame.transform.scale(self.image, rects[random.randint(0, len(rects) - 1)])
         self.x = 600 -  xx[random.randint(0,2)]
         self.y = 300
@@ -34,7 +34,7 @@ class Plateform(pygame.sprite.Sprite):
         self.y += y_change
 
     def draw(self, screen):
-        #screen.blit(self.image, (self.x, self.y))
+        screen.blit(self.image, (self.x, self.y))
         #pygame.draw.rect(screen, pygame.Color('black'), [self.x, self.y,  self.image.get_width(), self.image.get_height()], 0)
         #pygame.display.flip()
         screen.blit(self.image, (self.x, self.y))

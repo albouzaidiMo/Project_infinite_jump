@@ -2,7 +2,7 @@ import pygame
 from os.path import join
 
 def getBackground():
-    img = pygame.image.load(join("assets","floor.png"))
+    img = pygame.image.load(join("assets","background.jpg"))
     img = pygame.transform.scale(img, (800, 600))
     return img
 
