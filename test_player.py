@@ -20,13 +20,32 @@ def test_move_right(player):
     player.right()
     assert player.rect.x == start_x + player.player_x_change
 
-def test_jump_vy_flag(player):
+def test_first_jump(player):
+    player.jump()
+    assert player.vy == -20
+    assert player.is_jumping[0] is True
+    assert player.is_jumping[1] is False
+
+
+def test_second_jump(player):
+    player.jump()
     player.jump()
     assert player.vy == -15
-    assert player.is_jumping is True
-def test_jump_cannot_double_jump(player):
+    assert player.is_jumping[1] is True
+
+def test_no_third_jump(player):
     player.jump()
-    first_vy = player.vy
     player.jump()
-    assert player.vy == first_vy
-    assert player.is_jumping is True
+    vy_before = player.vy
+    player.jump()
+    assert player.vy == vy_before
+def test_frontiere_right_wrap(player):
+    player.rect.left = 801
+    player.frontiere()
+    assert player.rect.right == 0
+
+
+def test_frontiere_left_wrap(player):
+    player.rect.right = -1
+    player.frontiere()
+    assert player.rect.left == 800
