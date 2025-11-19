@@ -9,6 +9,8 @@ class MainMenu(pygame.sprite.Sprite):
         self.muted = False
         self.started = False
         self.sound = pygame.mixer.Sound(join("assets", "music.wav"))
+        self.sound_fail= pygame.mixer.Sound(join("assets", "fail_music.wav"))
+
         pygame.mixer.Sound.play(self.sound)
 
 

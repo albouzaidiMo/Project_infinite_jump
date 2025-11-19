@@ -50,9 +50,10 @@ def init_platforms_and_enemies(enemy_img):
                 w = 100
             p.x = random.randint(0, WIDTH - w)
 
-            if random.random() < 0.4:
-                e = create_enemy_on_platform(p, enemy_img)
-                enemies.append(e)
+            if score>400:
+                     if random.random() < min(0.9,score/1000):
+                        e = create_enemy_on_platform(p, enemy_img)
+                        enemies.append(e)
             else:
                 p.enemy = None
         y -= GAP_Y
@@ -82,13 +83,14 @@ def recycle_platforms_and_enemies(enemies, enemy_img):
                 e.rect.bottom = p.y
                 e.rect.x = random.randint(x_min, x_max - e.width)
             else:
-                if random.random() < 0.4:
-                    e = create_enemy_on_platform(p, enemy_img)
-                    enemies.append(e)
+                if score>400:
+                     if random.random() < min(0.9,score/1000):
+                        e = create_enemy_on_platform(p, enemy_img)
+                        enemies.append(e)
     return enemies
 
 
-
+score = 0
 
 def main():
     pygame.init()
@@ -97,7 +99,8 @@ def main():
     clock = pygame.time.Clock()
     #background = utils.getBackground()
 
-    player_img = pygame.image.load(join("assets", "rectangle.png")).convert_alpha()
+    player_img = pygame.image.load(join("assets", "mario_statique.png")).convert_alpha()
+    player_img = pygame.transform.scale(player_img, (21, 36))
     enemy_img = pygame.image.load(join("assets", "enemy.png"))
     enemy_img = pygame.transform.scale(enemy_img, (52, 33))
 
@@ -140,17 +143,23 @@ def main():
         else:
             if not game_over:
                 keys = pygame.key.get_pressed()
+                moving = False
                 if keys[pygame.K_LEFT]:
                     player.left()
+                    moving = True
                 if keys[pygame.K_RIGHT]:
                     player.right()
-
+                    moving = True
+                player.animate(moving)
                 player.frontiere()
                 player.update(HEIGHT)
 
                 # Détection Game Over : Chute
                 if scroll_started and player.rect.bottom >= HEIGHT:
                     print("GAME OVER : Tu es tombé !")
+                    if not menu.muted:
+                        pygame.mixer.Sound.play(menu.sound_fail)
+
                     game_over = True
 
                 on_platform_this_frame = False
@@ -181,6 +190,8 @@ def main():
                     # Détection Game Over : Ennemi
                     if player.rect.colliderect(e.rect):
                         print("GAME OVER : Ennemi touché !")
+                        if not menu.muted:
+                            pygame.mixer.Sound.play(menu.sound_fail)
                         game_over = True
                         break
 
@@ -208,6 +219,7 @@ def main():
                 draw_text(screen, "Appuyez sur ENTREE pour rejouer", 25, WHITE, WIDTH / 2, HEIGHT / 2 + 80)
                 pygame.mixer_music.stop()
                 pygame.mixer.Sound.stop(menu.sound)
+
             pygame.display.flip()
         clock.tick(60)
 
