@@ -8,7 +8,6 @@ def random_position_in_platform_with_width(platform_data, height, width):
     x_min = platform_data[0]
     x_max = platform_data[1]
     y_plat = platform_data[2]
-    
     # Sécurité : s'assurer qu'il y a de la place pour l'ennemi
     if x_max - width > x_min:
         x_random = random.randint(x_min, x_max - width)
@@ -35,7 +34,7 @@ class Enemy(pygame.sprite.Sprite):
 
         position = random_position_in_platform_with_width(self.platform_data, self.height, self.width)
         self.rect.x = position[0]
-        self.rect.bottom = platform_data[2] # On place le bas de l'ennemi sur le haut de la plateforme
+        self.rect.bottom = platform_data[2]   # On place le bas de l'ennemi sur le haut de la plateforme
 
         self.x_change = 2  # Vitesse de déplacement (5 était très rapide)
         self.is_mvt_left = False # Direction initiale

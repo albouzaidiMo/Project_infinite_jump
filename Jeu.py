@@ -1,6 +1,8 @@
 import pygame
 import random
 from os.path import join
+
+from main_menu import MainMenu
 from player import Player
 from plateforme import spawnPlateform, activePlates
 from ennemies import Enemy
@@ -96,7 +98,8 @@ def main():
     #background = utils.getBackground()
 
     player_img = pygame.image.load(join("assets", "rectangle.png")).convert_alpha()
-    enemy_img = pygame.transform.scale(player_img, (20, 20))
+    enemy_img = pygame.image.load(join("assets", "enemy.png"))
+    enemy_img = pygame.transform.scale(enemy_img, (52, 33))
 
     player = Player(player_img)
 
@@ -107,8 +110,13 @@ def main():
 
     game_over = False
     score = 0
+    started = False
+    menu = MainMenu()
 
     while running:
+
+
+
         # Gestion des événements
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -125,78 +133,82 @@ def main():
                     if event.key == pygame.K_RETURN:
                         main()
                         return
+        if not started:
+            i = menu.run(screen)
+            running = i != 0
+            started = i == 1
+        else:
+            if not game_over:
+                keys = pygame.key.get_pressed()
+                if keys[pygame.K_LEFT]:
+                    player.left()
+                if keys[pygame.K_RIGHT]:
+                    player.right()
 
-        if not game_over:
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_LEFT]:
-                player.left()
-            if keys[pygame.K_RIGHT]:
-                player.right()
+                player.frontiere()
+                player.update(HEIGHT)
 
-            player.frontiere()
-            player.update(HEIGHT)
-
-            # Détection Game Over : Chute
-            if scroll_started and player.rect.bottom >= HEIGHT:
-                print("GAME OVER : Tu es tombé !")
-                game_over = True
-
-            on_platform_this_frame = False
-            for p in activePlates:
-                plat_rect = pygame.Rect(p.x, p.y, p.image.get_width(), p.image.get_height())
-                if player.vy >= 0 and player.rect.colliderect(plat_rect):
-                    if player.rect.bottom <= plat_rect.top + 15:
-                        player.rect.bottom = plat_rect.top
-                        player.vy = 0
-                        player.is_jumping = [False,False]
-                        on_platform_this_frame = True
-
-            if on_platform_this_frame and not scroll_started:
-                scroll_started = True
-
-            if scroll_started:
-                # Augmentation du score quand ça scroll
-                score += 1
-
-                for p in activePlates:
-                    p.update()
-                for e in enemies:
-                    e.rect.bottom = e.platform_sprite.y
-                enemies = recycle_platforms_and_enemies(enemies, enemy_img)
-
-            for e in enemies:
-                e.mouvement_uniforme_in_platform()
-                # Détection Game Over : Ennemi
-                if player.rect.colliderect(e.rect):
-                    print("GAME OVER : Ennemi touché !")
+                # Détection Game Over : Chute
+                if scroll_started and player.rect.bottom >= HEIGHT:
+                    print("GAME OVER : Tu es tombé !")
                     game_over = True
-                    break
 
-        #screen.blit(background, (0, 0))
-        screen.fill(WHITE)
+                on_platform_this_frame = False
+                for p in activePlates:
+                    plat_rect = pygame.Rect(p.x, p.y, p.image.get_width(), p.image.get_height())
+                    if player.vy >= 0 and player.rect.colliderect(plat_rect):
+                        if player.rect.bottom <= plat_rect.top + 15:
+                            player.rect.bottom = plat_rect.top
+                            player.vy = 0
+                            player.is_jumping = [False,False]
+                            on_platform_this_frame = True
 
-        for p in activePlates:
-            p.draw(screen)
-        for e in enemies:
-            screen.blit(e.image, e.rect.topleft)
+                if on_platform_this_frame and not scroll_started:
+                    scroll_started = True
 
-        player.draw(screen)
+                if scroll_started:
+                    # Augmentation du score quand ça scroll
+                    score += 1
 
-        draw_text(screen, f"Score : {score}", 30, BLACK, WIDTH / 2, 10)
+                    for p in activePlates:
+                        p.update()
+                    for e in enemies:
+                        e.rect.bottom = e.platform_sprite.y
+                    enemies = recycle_platforms_and_enemies(enemies, enemy_img)
 
-        #Affichage écran Game Over
-        if game_over:
-            # Fond semi-transparent noir
-            overlay = pygame.Surface((WIDTH, HEIGHT))
-            overlay.set_alpha(150)
-            overlay.fill(BLACK)
-            screen.blit(overlay, (0, 0))
+                for e in enemies:
+                    e.mouvement_uniforme_in_platform()
+                    # Détection Game Over : Ennemi
+                    if player.rect.colliderect(e.rect):
+                        print("GAME OVER : Ennemi touché !")
+                        game_over = True
+                        break
 
-            draw_text(screen, "GAME OVER", 80, RED, WIDTH / 2, HEIGHT / 2 - 50)
-            draw_text(screen, f"Score Final: {score}", 40, WHITE, WIDTH / 2, HEIGHT / 2 + 20)
-            draw_text(screen, "Appuyez sur ENTREE pour rejouer", 25, WHITE, WIDTH / 2, HEIGHT / 2 + 80)
+            screen.blit(utils.getBackground(), (0, 0))
 
-        pygame.display.flip()
+
+            for p in activePlates:
+                p.draw(screen)
+            for e in enemies:
+                screen.blit(e.image, e.rect.topleft)
+
+            player.draw(screen)
+
+            draw_text(screen, f"Score : {score}", 30, BLACK, WIDTH / 2, 10)
+
+            #Affichage écran Game Over
+            if game_over:
+                # Fond semi-transparent noir
+                overlay = pygame.Surface((WIDTH, HEIGHT))
+                overlay.set_alpha(150)
+                overlay.fill(BLACK)
+                screen.blit(overlay, (0, 0))
+                draw_text(screen, "GAME OVER", 80, RED, WIDTH / 2, HEIGHT / 2 - 50)
+                draw_text(screen, f"Score Final: {score}", 40, WHITE, WIDTH / 2, HEIGHT / 2 + 20)
+                draw_text(screen, "Appuyez sur ENTREE pour rejouer", 25, WHITE, WIDTH / 2, HEIGHT / 2 + 80)
+                pygame.mixer_music.stop()
+                pygame.mixer.Sound.stop(menu.sound)
+            pygame.display.flip()
         clock.tick(60)
 
     pygame.quit()
