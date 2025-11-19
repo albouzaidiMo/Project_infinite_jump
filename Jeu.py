@@ -16,7 +16,7 @@ def draw_text(screen, text, size, color, x, y):
         font = pygame.font.SysFont("arial", size)
     text_surface = font.render(text, True, color)
     text_rect = text_surface.get_rect()
-    text_rect.midtop = (x, y)
+    text_rect.midtop = (x , y)
     screen.blit(text_surface, text_rect)
 
 
@@ -148,7 +148,7 @@ def main():
                     if player.rect.bottom <= plat_rect.top + 15:
                         player.rect.bottom = plat_rect.top
                         player.vy = 0
-                        player.is_jumping = False
+                        player.is_jumping = [False,False]
                         on_platform_this_frame = True
 
             if on_platform_this_frame and not scroll_started:

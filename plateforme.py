@@ -10,7 +10,7 @@ import threading
 activePlates = []
 rects = [(200,80), (150, 80), (250, 80)]
 xx = [600, 300, 0]
-y_change = 1.2
+y_change = 1.7
 
 class Plateform(pygame.sprite.Sprite):
     def __init__(self):

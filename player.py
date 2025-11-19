@@ -9,15 +9,18 @@ class Player(pygame.sprite.Sprite):
         self.vx = 0
         self.vy = 0
         self.gravity = 1
-        self.is_jumping = False
+        self.is_jumping = [False,False]
         self.width = self.rect.width
         self.height = self.rect.height
         self.player_y_change = 50
         self.player_x_change = 5
     def jump(self):
-        if not self.is_jumping:
-            self.vy = -22
-            self.is_jumping = True
+        if not self.is_jumping[0]:
+            self.vy = -20
+            self.is_jumping[0] = True
+        elif not self.is_jumping[1]:
+            self.vy = -15
+            self.is_jumping[1] = True
 
 
     def update(self, screen_height):
@@ -27,7 +30,7 @@ class Player(pygame.sprite.Sprite):
         if self.rect.y + self.height >= screen_height:
             self.rect.y = screen_height- self.height
             self.vy = 0
-            self.is_jumping = False
+            self.is_jumping = [False,False]
     def draw(self, screen):
         screen.blit(self.image, (self.rect.x, self.rect.y))
 

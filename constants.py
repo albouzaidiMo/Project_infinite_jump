@@ -2,7 +2,7 @@
 WIDTH, HEIGHT = 800, 600
 
 # Configuration du jeu
-GAP_Y = 170
+GAP_Y = 160
 plateforme_par_ligne = 1
 
 # Couleurs
