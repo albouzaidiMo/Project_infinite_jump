@@ -40,7 +40,12 @@ class ShieldManager:
         self.shield = None
         self.spawn_interval = 800
         self.last_spawn_score = 0
-
+        try:
+            self.shield_sound = pygame.mixer.Sound(join("assets", "shield.mp3"))
+            self.shield_sound.set_volume(0.5) 
+        except Exception as e:
+            print(f"Erreur chargement son shield: {e}")
+            self.shield_sound = None
     def spawn_shield(self, platforms, current_score):
         if self.shield is None and current_score - self.last_spawn_score >= self.spawn_interval:
             visible_platforms = [p for p in platforms if 0< p.y < 200]
@@ -63,6 +68,8 @@ class ShieldManager:
         if self.shield is not None and not self.shield.collected:
             if player.rect.colliderect(self.shield.rect):
                 self.shield.collected = True
+                if self.shield_sound:
+                    self.shield_sound.play()
                 return True
         return False
 

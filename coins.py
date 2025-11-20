@@ -1,6 +1,7 @@
 # coins.py
 import random
 import pygame
+from os.path import join  
 from plateforme import activePlates
 
 
@@ -16,7 +17,6 @@ class Coin(pygame.sprite.Sprite):
         width = self.platform.image.get_width()
 
         # décalage horizontal aléatoire sur la plateforme
-        # (on évite les tout petits bords)
         self.offset_x = random.randint(5, max(5, width - 5))
 
         # position initiale
@@ -41,8 +41,17 @@ class CoinManager:
         self.spawn_probability = spawn_probability
         self.coins = pygame.sprite.Group()
 
+        # --- AJOUT DU SON ---
+        try:
+            # On charge le son fourni
+            self.coin_sound = pygame.mixer.Sound(join("assets", "coin-257878.mp3"))
+            self.coin_sound.set_volume(0.2) 
+        except Exception as e:
+            print(f"Erreur chargement son coin: {e}")
+            self.coin_sound = None
+        # --------------------
+
         # Plateformes pour lesquelles on a déjà tenté de créer une pièce
-        # (pour leur "vie" actuelle)
         self.attempted_platforms = set()
 
         # Dernière position y connue des plateformes
@@ -74,11 +83,9 @@ class CoinManager:
 
     def _update_platform_life_cycle(self):
         """
-        Détecte quand une plateforme a été recyclée vers le haut :
-        si son y a fortement diminué entre deux frames,
-        on considère que c'est une nouvelle 'vie' -> nouvelle tentative possible.
+        Détecte quand une plateforme a été recyclée vers le haut.
         """
-        THRESHOLD = 50  # seuil de variation pour considérer une "téléportation" vers le haut
+        THRESHOLD = 50 
 
         # Nettoyage des plateformes disparues
         for p in list(self.platform_last_y.keys()):
@@ -93,7 +100,6 @@ class CoinManager:
 
             # Si old_y >> new_y, la plateforme est remontée d'un coup => recyclée
             if old_y - new_y > THRESHOLD:
-                # nouvelle vie : on autorise une nouvelle tentative de pièce
                 self.attempted_platforms.discard(p)
 
             self.platform_last_y[p] = new_y
@@ -111,7 +117,7 @@ class CoinManager:
             if c.platform not in activePlates:
                 self.coins.remove(c)
 
-        # Met à jour le "cycle de vie" des plateformes (détection recyclage)
+        # Met à jour le "cycle de vie" des plateformes
         self._update_platform_life_cycle()
 
         # Pour chaque plateforme sans pièce, si on n'a pas encore tenté dans cette vie -> tenter
@@ -129,8 +135,10 @@ class CoinManager:
         """Si le joueur touche une pièce -> +score et suppression de la pièce."""
         for c in list(self.coins):
             if player_rect.colliderect(c.rect):
-                self.collected += 1  # compteur coins ramassés
-                score.add(amount)  # pour garder la logique actuelle
+                self.collected += 1  
+                score.add(amount)  
                 self.coins.remove(c)
-                # On ne touche pas à attempted_platforms ici :
-                # la plateforme ne re-tentera qu'après recyclage
+                
+                # --- JOUER LE SON ICI ---
+                if self.coin_sound:
+                    self.coin_sound.play()
