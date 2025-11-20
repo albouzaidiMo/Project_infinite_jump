@@ -97,8 +97,7 @@ def main():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Mario vertical")
     clock = pygame.time.Clock()
-    #background = utils.getBackground()
-
+    screen.fill(pygame.Color("black"))
     player_img = pygame.image.load(join("assets", "mario_statique.png")).convert_alpha()
     player_img = pygame.transform.scale(player_img, (21, 36))
     enemy_img = pygame.image.load(join("assets", "enemy.png"))
@@ -117,8 +116,6 @@ def main():
     menu = MainMenu()
 
     while running:
-
-
 
         # Gestion des événements
         for event in pygame.event.get():

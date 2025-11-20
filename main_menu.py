@@ -9,7 +9,7 @@ class MainMenu(pygame.sprite.Sprite):
         self.muted = False
         self.started = False
         self.sound = pygame.mixer.Sound(join("assets", "music.wav"))
-        self.sound_fail= pygame.mixer.Sound(join("assets", "fail_music.wav"))
+        self.sound_fail = pygame.mixer.Sound(join("assets", "fail_music.wav"))
 
         pygame.mixer.Sound.play(self.sound)
 
@@ -41,12 +41,9 @@ class MainMenu(pygame.sprite.Sprite):
                     pos = pygame.mouse.get_pos()
                     print(pos)
                     if self.get_startRect().collidepoint(pos):
-                        print(pos)
-                        print("WE PLAYYY")
                         self.started = True
                         return 1
                     elif self.get_endRect().collidepoint(pos):
-                        print("WE STOPPP")
                         return 0
                     elif self.get_muteRect().collidepoint(pos):
                         self.muted = not self.muted
