@@ -8,7 +8,7 @@ platform_sol = [ 0 , 800 , 600 ]
 platform_haute = [ 250 , 680 , 70 ]
 platform_courte = [ 100 , 114 , 200 ]
 
-screen1 = pygame.image.load("enemytest.png")
+screen1 = pygame.image.load("assets/enemy.png")
 
 enemy_1 = Enemy(screen1, platform_sol)
 enemy_1.rect.x = 600
