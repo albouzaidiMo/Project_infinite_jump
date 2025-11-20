@@ -10,7 +10,7 @@ import utils
 
 from score import Score
 from level import init_platforms_and_enemies, recycle_platforms_and_enemies
-
+from shield import ShieldManager, draw_shield_indicator
 
 def draw_text(screen, text, size, color, x, y):
     try:
@@ -37,7 +37,8 @@ def main():
 
     score = Score()
     player = Player(player_img)
-
+    shield_manager = ShieldManager()
+    player.has_shield = False
     enemies = init_platforms_and_enemies(enemy_img, score)
 
     coin_manager = CoinManager(coin_img, spawn_probability=0.4)
@@ -128,14 +129,26 @@ def main():
                 coin_manager.check_collision(player.rect, score)
 
                 # Collisions ennemis
+                # Collisions ennemis
                 for e in enemies:
                     e.mouvement_uniforme_in_platform()
                     if player.rect.colliderect(e.rect):
-                        if not menu.muted:
-                            pygame.mixer.Sound.play(menu.sound_fail)
-                        game_over = True
-                        break
+                        if player.has_shield:
+                            player.has_shield = False
+                            enemies.remove(e)
+                            break
+                        else:
+                            if not menu.muted:
+                                pygame.mixer.Sound.play(menu.sound_fail)
+                            game_over = True
+                            break
+                if scroll_started:
+                    score.add(1)
 
+                    shield_manager.update(activePlates, score.value)
+
+                    if shield_manager.check_collision(player):
+                        player.has_shield = True
             # --- DRAW ---
             screen.blit(utils.getBackground(), (0, 0))
 
@@ -146,6 +159,10 @@ def main():
 
             coin_manager.draw(screen)
             player.draw(screen)
+            shield_manager.draw(screen)
+
+            if player.has_shield:
+                draw_shield_indicator(screen, 10, 50)
 
             draw_text(screen, f"Score : {score.value}", 30, BLACK, WIDTH / 2, 10)
             draw_text(screen, f"Coins : {coin_manager.collected}", 25, BLACK, WIDTH - 80, 10)
