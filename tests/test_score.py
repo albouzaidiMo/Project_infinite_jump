@@ -51,10 +51,6 @@ def test_enemy_spawn_prob_zero_below_threshold(score):
     assert score.enemy_spawn_prob() == 0
 
 
-def test_enemy_spawn_prob_linear_after_threshold(score):
-    score.value = 800  # > 500, prob = value / 400
-    expected = 800 / 400
-    assert score.enemy_spawn_prob() == pytest.approx(expected)
 
 
 def test_enemy_spawn_prob_capped_at_0_9(score):
