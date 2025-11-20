@@ -1,4 +1,3 @@
-# coins.py
 import random
 import pygame
 from os.path import join  
@@ -126,7 +125,7 @@ class CoinManager:
                 self._maybe_spawn_on_platform(p)
                 self.attempted_platforms.add(p)
 
-    # ---------- Affichage & collisions ----------
+
 
     def draw(self, screen):
         self.coins.draw(screen)

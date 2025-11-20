@@ -1,8 +1,5 @@
 import pygame
 import random
-from os.path import join
-from constants import * # Import depuis constants.py au lieu de Jeu.py
-
 def random_position_in_platform_with_width(platform_data, height, width):
     # platform_data est une liste : [x_min, x_max, y_plat]
     x_min = platform_data[0]
