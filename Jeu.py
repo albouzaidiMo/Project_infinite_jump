@@ -157,12 +157,12 @@ def main():
                     # Mise à jour coins & shield
                     coin_manager.update()
                     shield_manager.update(activePlates, score.value)
-                    if shield_manager.check_collision(player):
+                    if shield_manager.check_collision(player, is_muted=menu.muted):
                         player.has_shield = True
+                
 
                 # Collisions pièces
-                coin_manager.check_collision(player.rect, score)
-
+                coin_manager.check_collision(player.rect, score, is_muted=menu.muted)
                 # Collisions ennemis
                 for e in enemies:
                     e.mouvement_uniforme_in_platform()

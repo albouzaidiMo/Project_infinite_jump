@@ -64,11 +64,12 @@ class ShieldManager:
 
         self.spawn_shield(platforms, current_score)
 
-    def check_collision(self, player):
+    def check_collision(self, player, is_muted=False):
         if self.shield is not None and not self.shield.collected:
             if player.rect.colliderect(self.shield.rect):
                 self.shield.collected = True
-                if self.shield_sound:
+                
+                if self.shield_sound and not is_muted:
                     self.shield_sound.play()
                 return True
         return False

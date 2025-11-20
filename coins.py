@@ -130,14 +130,13 @@ class CoinManager:
     def draw(self, screen):
         self.coins.draw(screen)
 
-    def check_collision(self, player_rect, score, amount=10):
-        """Si le joueur touche une pièce -> +score et suppression de la pièce."""
+    def check_collision(self, player_rect, score, is_muted=False, amount=10):
+        """Si le joueur touche une pièce -> +score et suppression."""
         for c in list(self.coins):
             if player_rect.colliderect(c.rect):
-                self.collected += 1  
-                score.add(amount)  
+                self.collected += 1
+                score.add(amount)
                 self.coins.remove(c)
                 
-                # --- JOUER LE SON ICI ---
-                if self.coin_sound:
+                if self.coin_sound and not is_muted:
                     self.coin_sound.play()
