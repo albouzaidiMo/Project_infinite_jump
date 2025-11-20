@@ -38,12 +38,12 @@ class Shield:
 class ShieldManager:
     def __init__(self):
         self.shield = None
-        self.spawn_interval = 1000
+        self.spawn_interval = 800
         self.last_spawn_score = 0
 
     def spawn_shield(self, platforms, current_score):
         if self.shield is None and current_score - self.last_spawn_score >= self.spawn_interval:
-            visible_platforms = [p for p in platforms if 0 < p.y < 600]
+            visible_platforms = [p for p in platforms if 0< p.y < 300]
             if visible_platforms:
                 platform = random.choice(visible_platforms)
                 self.shield = Shield(platform)
