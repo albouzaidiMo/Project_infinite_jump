@@ -127,6 +127,13 @@ def main():
                 if event.type == pygame.KEYDOWN:
                     if event.key in (pygame.K_SPACE, pygame.K_UP):
                         player.jump()
+                    if event.key == pygame.K_ESCAPE:
+                        menu.started = False
+                        started = False
+                        i = menu.run(screen)
+
+                        # running = i != 0
+
             # Si c'est Game Over
             else:
                 if event.type == pygame.KEYDOWN:
@@ -147,6 +154,7 @@ def main():
                 if keys[pygame.K_RIGHT]:
                     player.right()
                     moving = True
+
                 player.animate(moving)
                 player.frontiere()
                 player.update(HEIGHT)
