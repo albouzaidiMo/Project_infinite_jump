@@ -12,6 +12,7 @@ from score import Score
 from level import init_platforms_and_enemies, recycle_platforms_and_enemies
 from shield import ShieldManager, draw_shield_indicator
 
+
 def draw_text(screen, text, size, color, x, y):
     try:
         font = pygame.font.Font(join("assets", "SuperMario256.ttf"), size)
@@ -21,6 +22,17 @@ def draw_text(screen, text, size, color, x, y):
     text_rect = text_surface.get_rect()
     text_rect.midtop = (x, y)
     screen.blit(text_surface, text_rect)
+
+
+def get_speed(score_value: int) -> float:
+    """
+    Vitesse du jeu en fonction du score.
+    Variation très lente :
+      - base : 1.7
+      - +0.1 de vitesse tous les 1000 points de score
+      - vitesse max : 3.0
+    """
+    return min(1.7 + 0.0001 * score_value, 3.0)
 
 
 def main():
@@ -107,14 +119,11 @@ def main():
                     scroll_started = True
 
                 if scroll_started:
+                    # Incrémentation du score liée au scroll
                     score.add(1)
 
-                    # 🔥 Vitesse en fonction du score
-                    # vitesse de base : 1.7
-                    # chaque 100 points de score → +0.2 de vitesse
-                    speed = 1.7 + 0.0005 * score.value
-                    # on limite la vitesse max pour que ça reste jouable
-                    speed = min(speed, 5)
+                    # Vitesse en fonction du score (variation lente et simplifiée)
+                    speed = get_speed(score.value)
                     set_speed(speed)
 
                     for p in activePlates:
@@ -125,10 +134,14 @@ def main():
                     enemies = recycle_platforms_and_enemies(enemies, enemy_img, score)
                     coin_manager.update()
 
+                    # Mise à jour et collisions pour le shield
+                    shield_manager.update(activePlates, score.value)
+                    if shield_manager.check_collision(player):
+                        player.has_shield = True
+
                 # Collisions pièces
                 coin_manager.check_collision(player.rect, score)
 
-                # Collisions ennemis
                 # Collisions ennemis
                 for e in enemies:
                     e.mouvement_uniforme_in_platform()
@@ -142,13 +155,7 @@ def main():
                                 pygame.mixer.Sound.play(menu.sound_fail)
                             game_over = True
                             break
-                if scroll_started:
-                    score.add(1)
 
-                    shield_manager.update(activePlates, score.value)
-
-                    if shield_manager.check_collision(player):
-                        player.has_shield = True
             # --- DRAW ---
             screen.blit(utils.getBackground(), (0, 0))
 
@@ -166,12 +173,8 @@ def main():
 
             draw_text(screen, f"Score : {score.value}", 30, BLACK, WIDTH / 2, 10)
             draw_text(screen, f"Coins : {coin_manager.collected}", 25, BLACK, WIDTH - 80, 10)
-
-            level = score.value // 300
-            speed = 1.7 + 0.1 * level
-            speed = min(speed, 3.5)
-
-            draw_text(screen, f"Speed : {round(speed, 2)}", 20, BLACK, WIDTH / 2, 40)
+            current_speed = get_speed(score.value)
+            draw_text(screen, f"Speed : {round(current_speed, 2)}", 20, BLACK, WIDTH / 2, 40)
 
             if game_over:
                 overlay = pygame.Surface((WIDTH, HEIGHT))
