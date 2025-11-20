@@ -3,7 +3,8 @@ from os.path import join
 
 from main_menu import MainMenu
 from player import Player
-from plateforme import activePlates
+from plateforme import activePlates, set_speed
+from coins import *
 from constants import *
 import utils
 
@@ -32,11 +33,14 @@ def main():
     player_img = pygame.transform.scale(player_img, (21, 36))
     enemy_img = pygame.image.load(join("assets", "enemy.png"))
     enemy_img = pygame.transform.scale(enemy_img, (52, 33))
+    coin_img = pygame.image.load(join("assets", "dollar.png"))
 
     score = Score()
     player = Player(player_img)
 
     enemies = init_platforms_and_enemies(enemy_img, score)
+
+    coin_manager = CoinManager(coin_img, spawn_probability=0.4)
 
     running = True
     scroll_started = False
@@ -104,12 +108,24 @@ def main():
                 if scroll_started:
                     score.add(1)
 
+                    # 🔥 Vitesse en fonction du score
+                    # vitesse de base : 1.7
+                    # chaque 100 points de score → +0.2 de vitesse
+                    speed = 1.7 + 0.0005 * score.value
+                    # on limite la vitesse max pour que ça reste jouable
+                    speed = min(speed, 5)
+                    set_speed(speed)
+
                     for p in activePlates:
                         p.update()
                     for e in enemies:
                         e.rect.bottom = e.platform_sprite.y
 
                     enemies = recycle_platforms_and_enemies(enemies, enemy_img, score)
+                    coin_manager.update()
+
+                # Collisions pièces
+                coin_manager.check_collision(player.rect, score)
 
                 # Collisions ennemis
                 for e in enemies:
@@ -128,9 +144,17 @@ def main():
             for e in enemies:
                 screen.blit(e.image, e.rect.topleft)
 
+            coin_manager.draw(screen)
             player.draw(screen)
 
             draw_text(screen, f"Score : {score.value}", 30, BLACK, WIDTH / 2, 10)
+            draw_text(screen, f"Coins : {coin_manager.collected}", 25, BLACK, WIDTH - 80, 10)
+
+            level = score.value // 300
+            speed = 1.7 + 0.1 * level
+            speed = min(speed, 3.5)
+
+            draw_text(screen, f"Speed : {round(speed, 2)}", 20, BLACK, WIDTH / 2, 40)
 
             if game_over:
                 overlay = pygame.Surface((WIDTH, HEIGHT))
