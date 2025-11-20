@@ -1,4 +1,4 @@
-from ennemies import *
+from goat.ennemies import *
 import pytest
 import pygame
 
@@ -8,7 +8,7 @@ platform_sol = [ 0 , 800 , 600 ]
 platform_haute = [ 250 , 680 , 70 ]
 platform_courte = [ 100 , 114 , 200 ]
 
-screen1 = pygame.image.load("../assets/enemy.png")
+screen1 = pygame.image.load("goat/assets/enemy.png")
 screen1 = pygame.transform.scale(screen1, (52, 33))
 
 enemy_1 = Enemy(screen1, platform_sol)
