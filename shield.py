@@ -43,7 +43,7 @@ class ShieldManager:
 
     def spawn_shield(self, platforms, current_score):
         if self.shield is None and current_score - self.last_spawn_score >= self.spawn_interval:
-            visible_platforms = [p for p in platforms if 0< p.y < 300]
+            visible_platforms = [p for p in platforms if 0< p.y < 200]
             if visible_platforms:
                 platform = random.choice(visible_platforms)
                 self.shield = Shield(platform)
