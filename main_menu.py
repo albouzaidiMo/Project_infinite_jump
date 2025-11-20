@@ -1,8 +1,5 @@
 import pygame
 from os.path import join
-
-
-
 class MainMenu(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()

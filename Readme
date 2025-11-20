@@ -1,0 +1,169 @@
+Infinite Jumper
+
+Description :
+
+Infinite Jumper est un jeu de plateforme 2D à défilement vertical développé en Python avec Pygame, dans le cadre d’un projet de programmation.
+Le joueur contrôle un personnage qui doit grimper de plateforme en plateforme tout en évitant les ennemis, en collectant des pièces et en utilisant des power-ups pour survivre le plus longtemps possible.
+
+Le niveau défile progressivement vers le bas :
+	•	si le joueur tombe en bas de l’écran → Game Over,
+	•	des plateformes sont générées et recyclées en continu pour créer un défilement infini,
+	•	des ennemis se déplacent sur certaines plateformes,
+	•	des pièces et un bouclier apparaissent au cours de la partie.
+
+L’objectif principal est d’obtenir le meilleur score possible en montant le plus haut possible tout en évitant les collisions mortelles.
+
+
+- Calcul du score
+
+Le score dans Infinite Jumper repose sur deux mécanismes :
+
+1. Progression verticale / survie
+	•	Dès que le défilement commence, le score augmente automatiquement (ex. +1 par frame ou par unité de scroll).
+	•	Plus le joueur survit longtemps, plus le score augmente.
+
+2. Collecte de pièces
+	•	Des pièces apparaissent sur les plateformes.
+	•	Chaque pièce ramassée donne un bonus de score via score.add(amount).
+
+
+⭐ Le score total reflète :
+	•	la durée de survie,
+	•	la prise de risque pour ramasser des pièces,
+	•	la capacité à se déplacer efficacement entre plateformes.
+
+En cours de jeu, plusieurs informations sont affichées en temps réel :
+	•	Score,
+	•	Coins collectés,
+	•	Speed (vitesse du scroll, dépendante du score).
+
+⸻Power-ups
+
+Dans Infinite Jumper, un power-up essentiel est déjà implémenté, mais la structure du projet permet d’en ajouter d’autres facilement.
+
+
+
+--🛡 Le Shield (Bouclier)
+
+Le bouclier apparaît parfois au-dessus d’une plateforme, sous forme d’icône flottante.
+	•	Géré par Shield et ShieldManager dans shield.py.
+	•	Quand le joueur le ramasse :
+	•	player.has_shield = True
+	•	Lors du prochain contact avec un ennemi :
+	•	l’ennemi est détruit,
+	•	le joueur survit,
+	•	le bouclier disparaît.
+
+Un indicateur visuel (draw_shield_indicator) apparaît pour signaler que le joueur est protégé.
+
+(Le code est structuré de façon à pouvoir intégrer facilement d’autres power-ups comme un aimant, un boost, un slow-motion, etc.)
+
+Comment jouer
+
+Contrôles :
+	•	Gauche : ←
+	•	Droite : →
+	•	Sauter : ESPACE ou ↑
+	•	Pause : ESC
+	        • affiche l’image de pause,
+
+Menu principal (MainMenu)
+	•	PLAY : lancer une partie
+	•	EXIT : quitter
+	•	Mute : activer / désactiver les sons
+
+
+
+⸻ Structure des fichiers du projet
+
+⸻ Le projet est organisé en plusieurs modules Python, chacun ayant une responsabilité claire.
+
+
+
+### Jeu.py
+	•	Point d’entrée du jeu.
+	•	Contient la boucle principale :
+	•	gestion des événements (clavier, pause, game over),
+	•	mise à jour du joueur, des plateformes, ennemis, pièces, bouclier,
+	•	calcul de la vitesse dynamique (via get_speed & set_speed),
+	•	affichage du Score, Coins, Speed et états.
+
+
+player.py
+	•	Classe Player :
+	•	gestion position (rect.x, rect.y),
+	•	gravité + vitesse verticale,
+	•	double saut,
+	•	animations (droite/gauche/saut),
+	•	wrap horizontal : sortie à droite → entrée à gauche.
+
+plateforme.py
+	•	Gère les plateformes :
+	•	liste globale activePlates,
+	•	génération initiale,
+	•	scroll vertical,
+	•	recyclage continu,
+	•	vitesse modifiée par set_speed().
+
+
+level.py
+	•	Initialise et recycle plateformes + ennemis :
+	•	init_platforms_and_enemies
+	•	recycle_platforms_and_enemies
+	•	Garantit un niveau infini cohérent avec la difficulté croissante.
+
+
+ennemies.py
+	•	Classe Enemy :
+	•	placement aléatoire mais sûr sur les plateformes,
+	•	déplacement horizontal,
+	•	gestion des collisions avec le joueur.
+
+
+coins.py
+	•	Gestion des pièces :
+	•	positionnement et apparence,
+	•	collision avec joueur → score.add(...),
+	•	peut être étendu via un CoinManager (spawn aléatoire, groupes…).
+
+
+score.py
+	•	Gère le score :
+	•	value (score actuel),
+	•	add() (ajout de points),
+	•	reset(),
+	•	logique d’apparition d’ennemis :
+	•	can_spawn_enemies,
+	•	enemy_spawn_prob (probabilité croissante).
+
+
+shield.py
+	•	Power-up Bouclier :
+	•	classe Shield (icône attachée à une plateforme),
+	•	classe ShieldManager (spawn, collisions, suppression),
+	•	draw_shield_indicator (affichage HUD “PROTÉGÉ”).
+
+
+main_menu.py
+	•	Menu principal :
+	•	image de fond,
+	•	boutons PLAY / EXIT / Mute,
+	•	contrôle de la musique,
+	•	gestion des états de démarrage.
+
+
+utils.py
+	•	Helpers pour charger les images :
+	•	getBackground(),
+	•	getMenuImg().
+
+
+constants.py
+	•	Définit les valeurs globales :
+	•	largeur et hauteur fenêtre,
+	•	couleurs,
+	•	paramètres de génération des plateformes.
+
+
+test_ennemies.py
+	•	Tests unitaires Pytest pour valider le comportement des ennemis.

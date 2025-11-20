@@ -1,11 +1,6 @@
-import random
-
 import pygame
 from os.path import join
-from pygame import rect
-import utils
 import random
-import threading
 
 activePlates = []
 rects = [(200,80), (150, 80), (250, 80)]
