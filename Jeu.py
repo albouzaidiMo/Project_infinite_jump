@@ -41,25 +41,37 @@ def main():
     pygame.display.set_caption("Mario vertical")
     clock = pygame.time.Clock()
 
+    # --- CHARGEMENT IMAGES ---
     player_img = pygame.image.load(join("assets", "mario_statique.png")).convert_alpha()
     player_img = pygame.transform.scale(player_img, (21, 36))
+
     enemy_img = pygame.image.load(join("assets", "enemy.png"))
     enemy_img = pygame.transform.scale(enemy_img, (52, 33))
+
     coin_img = pygame.image.load(join("assets", "dollar.png"))
 
+    # ⚠️ NOUVELLE IMAGE DE PAUSE ⚠️
+    # Mets un fichier "pause.png" dans assets (par ex. 400x200 px, texte PAUSE)
+    pause_img = pygame.image.load(join("assets", "pause.png"))
+    pause_img=pygame.transform.scale(pause_img, (800,600))
+    pause_rect = pause_img.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+
+    # --- OBJETS PRINCIPAUX ---
     score = Score()
     player = Player(player_img)
-    shield_manager = ShieldManager()
     player.has_shield = False
-    enemies = init_platforms_and_enemies(enemy_img, score)
 
+    shield_manager = ShieldManager()
+    enemies = init_platforms_and_enemies(enemy_img, score)
     coin_manager = CoinManager(coin_img, spawn_probability=0.4)
+
+    menu = MainMenu()
 
     running = True
     scroll_started = False
     game_over = False
     started = False
-    menu = MainMenu()
+    paused = False   # <<< ÉTAT DE PAUSE
 
     while running:
         # --- EVENTS ---
@@ -68,19 +80,26 @@ def main():
                 running = False
 
             if not game_over:
-                if event.type == pygame.KEYDOWN and event.key in (pygame.K_SPACE, pygame.K_UP):
-                    player.jump()
+                if event.type == pygame.KEYDOWN:
+                    # Saut seulement si pas en pause
+                    if not paused and event.key in (pygame.K_SPACE, pygame.K_UP):
+                        player.jump()
+                    # Toggle pause avec ECHAP
+                    if event.key == pygame.K_ESCAPE:
+                        paused = not paused
             else:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                     main()
                     return
 
+        # --- MENU AVANT LE JEU ---
         if not started:
             i = menu.run(screen)
             running = i != 0
             started = i == 1
         else:
-            if not game_over:
+            # --- GAME LOGIC ---
+            if not game_over and not paused:
                 keys = pygame.key.get_pressed()
                 moving = False
                 if keys[pygame.K_LEFT]:
@@ -122,19 +141,20 @@ def main():
                     # Incrémentation du score liée au scroll
                     score.add(1)
 
-                    # Vitesse en fonction du score (variation lente et simplifiée)
+                    # Vitesse en fonction du score (variation lente)
                     speed = get_speed(score.value)
                     set_speed(speed)
 
+                    # Mise à jour plateformes et ennemis
                     for p in activePlates:
                         p.update()
                     for e in enemies:
                         e.rect.bottom = e.platform_sprite.y
 
                     enemies = recycle_platforms_and_enemies(enemies, enemy_img, score)
-                    coin_manager.update()
 
-                    # Mise à jour et collisions pour le shield
+                    # Mise à jour coins & shield
+                    coin_manager.update()
                     shield_manager.update(activePlates, score.value)
                     if shield_manager.check_collision(player):
                         player.has_shield = True
@@ -171,11 +191,19 @@ def main():
             if player.has_shield:
                 draw_shield_indicator(screen, 10, 50)
 
+            # Score, Coins, Speed
             draw_text(screen, f"Score : {score.value}", 30, BLACK, WIDTH / 2, 10)
             draw_text(screen, f"Coins : {coin_manager.collected}", 25, BLACK, WIDTH - 80, 10)
+
             current_speed = get_speed(score.value)
             draw_text(screen, f"Speed : {round(current_speed, 2)}", 20, BLACK, WIDTH / 2, 40)
 
+            # --- OVERLAY PAUSE ---
+            if paused and not game_over:
+                # On dessine juste l'image de pause par-dessus
+                screen.blit(pause_img, pause_rect)
+
+            # --- GAME OVER ---
             if game_over:
                 overlay = pygame.Surface((WIDTH, HEIGHT))
                 overlay.set_alpha(150)
@@ -191,5 +219,7 @@ def main():
             clock.tick(60)
 
     pygame.quit()
+
+
 if __name__ == "__main__":
     main()
