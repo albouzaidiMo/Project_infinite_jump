@@ -12,6 +12,10 @@ rects = [(200,80), (150, 80), (250, 80)]
 xx = [600, 300, 0]
 y_change = 1.7
 
+def set_speed(new_speed):
+    global y_change
+    y_change = new_speed
+
 class Plateform(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
