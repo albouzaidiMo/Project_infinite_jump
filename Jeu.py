@@ -38,7 +38,8 @@ def get_speed(score_value: int) -> float:
 def main():
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("Mario vertical")
+    pygame.display.set_caption("Infinite Jumper")
+    pygame.display.set_icon(pygame.image.load(join("assets", "infini.png")))
     clock = pygame.time.Clock()
 
     # --- CHARGEMENT IMAGES ---
