@@ -1,4 +1,4 @@
-from enemies import *
+from ennemies import *
 import pytest
 import pygame
 
@@ -9,6 +9,7 @@ platform_haute = [ 250 , 680 , 70 ]
 platform_courte = [ 100 , 114 , 200 ]
 
 screen1 = pygame.image.load("assets/enemy.png")
+screen1 = pygame.transform.scale(screen1, (52, 33))
 
 enemy_1 = Enemy(screen1, platform_sol)
 enemy_1.rect.x = 600
@@ -24,10 +25,10 @@ enemy_4 = Enemy(screen1, platform_courte)
 
 def test_random_position_in_platform_with_width():
     
-    assert random_position_in_platform_with_width( platform_sol , 40 , 10) [1] == 560
+    assert random_position_in_platform_with_width( platform_sol , 40 , 10) [1] == 600
     assert random_position_in_platform_with_width( platform_sol , 40 , 10) [0] in list(range(791))
     assert random_position_in_platform_with_width( platform_sol , 20 , 100) [0] in list(range(701))
-    assert random_position_in_platform_with_width( platform_haute , 30 , 10 ) [1] == 40
+    assert random_position_in_platform_with_width( platform_haute , 30 , 10 ) [1] == 70
     assert random_position_in_platform_with_width( platform_haute , 20 , 10) [0] in list(range(250,671))
     assert random_position_in_platform_with_width( platform_haute , 20 , 250) [0] in list(range(250,461))
 
