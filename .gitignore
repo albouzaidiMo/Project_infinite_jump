@@ -1,0 +1,42 @@
+# ---- Python cache ----
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ---- IDE / Editor files ----
+.idea/
+.vscode/
+
+# ---- Virtual environments ----
+venv/
+env/
+
+# ---- OS-generated files ----
+.DS_Store
+Thumbs.db
+
+# ---- Build / distribution ----
+build/
+dist/
+*.egg-info/
+
+# ---- Logs / temp ----
+*.log
+*.tmp
+
+# ---- Testing ----
+.coverage
+htmlcov/
+.pytest_cache/
+
+# ---- Project-specific ----
+# If assets are generated or should not be versioned, ignore them:
+# assets/
+
+# Ignore GitLab CI cache (optional)
+.cache/
+
+# ---- Backup files ----
+*~
+*.bak
