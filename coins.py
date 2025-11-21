@@ -108,7 +108,7 @@ class CoinManager:
     def draw(self, screen):
         self.coins.draw(screen)
 
-    def check_collision(self, player_rect, score, amount=10):
+    def check_collision(self, player_rect, score,is_muted=False, amount=10):
         """Si le joueur touche une pièce -> +score et suppression de la pièce."""
         for c in list(self.coins):
             if player_rect.colliderect(c.rect):
