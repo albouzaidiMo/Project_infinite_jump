@@ -23,10 +23,12 @@ class Player(pygame.sprite.Sprite):
         self.frame = 0
         self.animation = 0.15
         self.direction = "right"
+
+    # animation du joueur
     def animate(self, moving1):
         if not moving1:
             self.img_act = self.image
-            return
+            return None
 
         self.frame += self.animation
         if self.frame >= len(self.images_right):
@@ -44,7 +46,7 @@ class Player(pygame.sprite.Sprite):
             self.vy = -15
             self.is_jumping[1] = True
 
-
+#jumping update
     def update(self, screen_height):
         self.rect.y += self.vy
         self.vy += self.gravity
@@ -56,14 +58,15 @@ class Player(pygame.sprite.Sprite):
     def draw(self, screen):
         screen.blit(self.img_act, self.rect.topleft)
 
+ # mvt gauche
     def left(self):
         self.rect.x -= self.player_x_change
         self.direction = "left"
-
+#mvt droite
     def right(self):
         self.rect.x += self.player_x_change
         self.direction = "right"
-
+#s'il sort de la gauche il reapparait de la droite
     def frontiere(self):
         if self.rect.left > 800:
             self.rect.right = 0

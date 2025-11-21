@@ -3,7 +3,8 @@ from plateforme import spawnPlateform, activePlates
 from ennemies import Enemy
 from constants import *
 
-
+#associer la plate a l'ennemi et vice-verça
+#lennemi ne doit pas dépasser la limite de la plateforme
 def create_enemy_on_platform(plateform, enemy_img):
     x_min = plateform.x
     x_max = plateform.x + plateform.image.get_width()
@@ -14,12 +15,11 @@ def create_enemy_on_platform(plateform, enemy_img):
     plateform.enemy = enemy
     return enemy
 
-
 def init_platforms_and_enemies(enemy_img, score_obj):
     activePlates.clear()
     enemies = []
     y = HEIGHT - 80
-
+#gestion de la proba d'apparition des ennemis
     while y > -HEIGHT:
         for k in range(plateforme_par_ligne):
             p = spawnPlateform()
@@ -40,7 +40,7 @@ def init_platforms_and_enemies(enemy_img, score_obj):
         y -= GAP_Y
     return enemies
 
-
+#la plateforme qui sort du haut réapparait du bas avec un random x
 def recycle_platforms_and_enemies(enemies, enemy_img, score_obj):
     if not activePlates:
         return enemies

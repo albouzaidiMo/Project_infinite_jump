@@ -1,6 +1,5 @@
 import pygame
 from os.path import join
-
 from main_menu import MainMenu
 from player import Player
 from plateforme import activePlates, set_speed
@@ -14,24 +13,14 @@ from shield import ShieldManager, draw_shield_indicator
 
 
 def draw_text(screen, text, size, color, x, y):
-    try:
-        font = pygame.font.Font(join("assets", "SuperMario256.ttf"), size)
-    except:
-        font = pygame.font.SysFont("arial", size)
+    font = pygame.font.Font(join("assets", "SuperMario256.ttf"), size)
     text_surface = font.render(text, True, color)
     text_rect = text_surface.get_rect()
     text_rect.midtop = (x, y)
     screen.blit(text_surface, text_rect)
 
 
-def get_speed(score_value: int) -> float:
-    """
-    Vitesse du jeu en fonction du score.
-    Variation très lente :
-      - base : 1.7
-      - +0.1 de vitesse tous les 1000 points de score
-      - vitesse max : 3.0
-    """
+def get_speed(score_value: int) :
     return min(1.7 + 0.0001 * score_value, 3.0)
 
 
@@ -42,22 +31,17 @@ def main():
     pygame.display.set_icon(pygame.image.load(join("assets", "infini.png")))
     clock = pygame.time.Clock()
 
-    # --- CHARGEMENT IMAGES ---
-    player_img = pygame.image.load(join("assets", "mario_statique.png")).convert_alpha()
+    # CHARGEMENT IMAGES
+    player_img = pygame.image.load(join("assets", "mario_statique.png"))
     player_img = pygame.transform.scale(player_img, (21, 36))
-
     enemy_img = pygame.image.load(join("assets", "enemy.png"))
     enemy_img = pygame.transform.scale(enemy_img, (52, 33))
-
     coin_img = pygame.image.load(join("assets", "dollar.png"))
-
-    # ⚠️ NOUVELLE IMAGE DE PAUSE ⚠️
-    # Mets un fichier "pause.png" dans assets (par ex. 400x200 px, texte PAUSE)
     pause_img = pygame.image.load(join("assets", "pause.png"))
     pause_img=pygame.transform.scale(pause_img, (800,600))
     pause_rect = pause_img.get_rect(center=(WIDTH // 2, HEIGHT // 2))
 
-    # --- OBJETS PRINCIPAUX ---
+    # OBJETS PRINCIPAUX
     score = Score()
     player = Player(player_img)
     player.has_shield = False
@@ -72,14 +56,13 @@ def main():
     scroll_started = False
     game_over = False
     started = False
-    paused = False   # <<< ÉTAT DE PAUSE
+    paused = False
 
     while running:
-        # --- EVENTS ---
+        # EVENTS
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-
             if not game_over:
                 if event.type == pygame.KEYDOWN:
                     # Saut seulement si pas en pause
@@ -91,15 +74,14 @@ def main():
             else:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                     main()
-                    return
 
-        # --- MENU AVANT LE JEU ---
+        # MENU AVANT LE JEU
         if not started:
             i = menu.run(screen)
             running = i != 0
             started = i == 1
         else:
-            # --- GAME LOGIC ---
+            # GAME LOGIC
             if not game_over and not paused:
                 keys = pygame.key.get_pressed()
                 moving = False
@@ -177,7 +159,7 @@ def main():
                             game_over = True
                             break
 
-            # --- DRAW ---
+            # DRAW
             screen.blit(utils.getBackground(), (0, 0))
 
             for p in activePlates:
@@ -195,16 +177,15 @@ def main():
             # Score, Coins, Speed
             draw_text(screen, f"Score : {score.value}", 30, BLACK, WIDTH / 2, 10)
             draw_text(screen, f"Coins : {coin_manager.collected}", 25, BLACK, WIDTH - 80, 10)
-
             current_speed = get_speed(score.value)
             draw_text(screen, f"Speed : {round(current_speed, 2)}", 20, BLACK, WIDTH / 2, 40)
 
-            # --- OVERLAY PAUSE ---
+            # OVERLAY PAUSE
             if paused and not game_over:
-                # On dessine juste l'image de pause par-dessus
+                # On dessine  l'image de pause
                 screen.blit(pause_img, pause_rect)
 
-            # --- GAME OVER ---
+            #  GAME OVER
             if game_over:
                 overlay = pygame.Surface((WIDTH, HEIGHT))
                 overlay.set_alpha(150)

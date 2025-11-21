@@ -5,7 +5,7 @@ from os.path import join
 
 class Shield:
     def __init__(self, platform):
-        self.image = pygame.image.load(join("assets", "bouclier.png")).convert_alpha()
+        self.image = pygame.image.load(join("assets", "bouclier.png"))
         self.image = pygame.transform.scale(self.image, (30, 30))
 
         self.platform = platform
@@ -18,7 +18,7 @@ class Shield:
 
         self.float_offset = 0
         self.float_speed = 0.1
-
+#le bouclier suit la plateforme
     def update(self):
         if not self.collected:
             self.rect.x = self.platform.x + self.offset_x
@@ -34,18 +34,14 @@ class Shield:
         if not self.collected:
             screen.blit(self.image, self.rect.topleft)
 
-
+#Gestion de l'apparition du bouclier
 class ShieldManager:
     def __init__(self):
         self.shield = None
         self.spawn_interval = 800
         self.last_spawn_score = 0
-        try:
-            self.shield_sound = pygame.mixer.Sound(join("assets", "shield.mp3"))
-            self.shield_sound.set_volume(0.5) 
-        except Exception as e:
-            print(f"Erreur chargement son shield: {e}")
-            self.shield_sound = None
+        self.shield_sound = pygame.mixer.Sound(join("assets", "shield.mp3"))
+        self.shield_sound.set_volume(0.5)
     def spawn_shield(self, platforms, current_score):
         if self.shield is None and current_score - self.last_spawn_score >= self.spawn_interval:
             visible_platforms = [p for p in platforms if 0< p.y < 200]
@@ -77,9 +73,9 @@ class ShieldManager:
         if self.shield is not None:
             self.shield.draw(screen)
 
-
+#Affichage de l'état de protection
 def draw_shield_indicator(screen, x, y):
-    shield_icon = pygame.image.load(join("assets", "bouclier.png")).convert_alpha()
+    shield_icon = pygame.image.load(join("assets", "bouclier.png"))
     shield_icon = pygame.transform.scale(shield_icon, (25, 25))
     screen.blit(shield_icon, (x, y))
 

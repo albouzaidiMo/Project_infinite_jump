@@ -27,7 +27,7 @@ Le score dans Infinite Jumper repose sur deux mécanismes :
 	•	Chaque pièce ramassée donne un bonus de score via score.add(amount).
 
 
-⭐ Le score total reflète :
+- Le score total reflète :
 	•	la durée de survie,
 	•	la prise de risque pour ramasser des pièces,
 	•	la capacité à se déplacer efficacement entre plateformes.
@@ -78,9 +78,7 @@ Menu principal (MainMenu)
 
 ⸻ Le projet est organisé en plusieurs modules Python, chacun ayant une responsabilité claire.
 
-
-
-### Jeu.py
+Jeu.py
 	•	Point d’entrée du jeu.
 	•	Contient la boucle principale :
 	•	gestion des événements (clavier, pause, game over),
@@ -167,3 +165,7 @@ constants.py
 
 test_ennemies.py
 	•	Tests unitaires Pytest pour valider le comportement des ennemis.
+test_player.py
+	•	Tests unitaires Pytest pour valider le comportement du joueur.
+test_score.py
+	•	Tests unitaires Pytest pour valider le comportement du score.

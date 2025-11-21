@@ -55,4 +55,3 @@ class MainMenu(pygame.sprite.Sprite):
                     return 0
 
         return 2
-

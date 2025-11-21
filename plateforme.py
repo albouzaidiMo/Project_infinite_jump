@@ -33,7 +33,6 @@ class Plateform(pygame.sprite.Sprite):
         self.y += y_change
 
     def draw(self, screen):
-        screen.blit(self.image, (self.x, self.y))
         #pygame.draw.rect(screen, pygame.Color('black'), [self.x, self.y,  self.image.get_width(), self.image.get_height()], 0)
         #pygame.display.flip()
         screen.blit(self.image, (self.x, self.y))

@@ -1,5 +1,3 @@
-# score.py
-
 class Score:
     def __init__(self):
         self.value = 0
@@ -12,7 +10,7 @@ class Score:
 
     def can_spawn_enemies(self):
         return self.value > 500
-
+#probabilité dépend du score
     def enemy_spawn_prob(self):
         if not self.can_spawn_enemies():
             return 0
